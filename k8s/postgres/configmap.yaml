@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: rag-platform
+data:
+  init.sql: |
+    CREATE EXTENSION IF NOT EXISTS vector;
+    SELECT 'CREATE DATABASE mlflow' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mlflow')\gexec
+    GRANT ALL PRIVILEGES ON DATABASE mlflow TO raguser;

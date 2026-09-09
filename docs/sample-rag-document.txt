@@ -1,0 +1,57 @@
+Internal Engineering Handbook: Project Meridian-9
+
+Project Meridian-9 is an internal platform developed by the fictional company
+Thornbrook Systems for coordinating satellite maintenance schedules. It was
+initiated in March 2019 under the codename "Project Halcyon" before being
+renamed to Meridian-9 in 2021 following a merger with Voss Dynamics.
+
+Architecture Overview
+
+The Meridian-9 platform runs on a custom orchestration layer called
+"Wrenfield," which is not related to any publicly known container
+orchestration system. Wrenfield manages workloads across a fleet of 14
+edge nodes located in three ground stations: Kestrel Station (Nevada),
+OspreyPoint (Iceland), and Tanager Base (Western Australia).
+
+Each ground station runs a local instance of the "Chorus" scheduling
+daemon, which negotiates satellite pass windows using a proprietary
+algorithm called Adaptive Windowing Priority Scoring (AWPS). AWPS assigns
+a priority score between 0 and 500 to each maintenance task based on three
+weighted factors: orbital decay risk (weight 0.5), thermal stress index
+(weight 0.3), and operator override flags (weight 0.2).
+
+Key Personnel
+
+The Meridian-9 project was led by Chief Engineer Sarina Voss-Okafor, who
+joined Thornbrook Systems in 2017 after the acquisition of her previous
+company, Halyard Robotics. The current on-call rotation lead is Devrim
+Almeida, who has held the role since Q3 2023.
+
+Incident History
+
+On November 4, 2022, Meridian-9 experienced what internal documentation
+refers to as the "Kestrel Drift Incident," in which a firmware
+misconfiguration caused Kestrel Station's Chorus daemon to miscalculate
+AWPS scores for 6 hours, resulting in 3 missed maintenance windows. The
+root cause was traced to an unhandled null value in the thermal stress
+index calculation when ambient sensor temperature exceeded 47.3°C.
+
+The fix, deployed as Wrenfield patch version 4.12.7, introduced a
+fallback default of 22.0°C for the thermal stress index whenever sensor
+readings failed validation.
+
+Data Retention Policy
+
+Meridian-9 telemetry data is retained for 730 days in the "Longshelf"
+cold storage tier before being purged, except for incident-related
+telemetry, which is retained indefinitely under retention class
+"Amber-Permanent."
+
+Glossary
+
+- AWPS: Adaptive Windowing Priority Scoring, the task prioritization
+  algorithm used by the Chorus scheduling daemon.
+- Wrenfield: The custom orchestration layer underlying Meridian-9.
+- Longshelf: The cold storage tier used for telemetry retention.
+- Amber-Permanent: A retention classification for incident-related data
+  that is never purged.

@@ -1,0 +1,34 @@
+# Spacelift stack configuration for the terraform/ directory.
+# Push this repo to GitHub/GitLab first — Spacelift needs a VCS integration,
+# it cannot run against a local-only folder.
+#
+# In the Spacelift UI, create a Stack with:
+#   Repository:    local-rag-platform
+#   Project root:  terraform
+#   VCS branch:    main
+#   Worker pool:   private (see docs/spacelift-notes.md — public workers
+#                  cannot reach a Minikube cluster running on your laptop)
+#
+# This file documents the stack's intended settings; Spacelift also
+# supports defining stacks via its Terraform provider for full IaC,
+# but for a first pass the UI-created stack referencing this repo is enough.
+
+version: "1"
+
+stack:
+  name: local-rag-platform
+  terraform_version: "1.8.0"   # match your local `terraform version` output
+  project_root: terraform
+  autodeploy: false             # require manual approval before apply — good practice to show in interviews
+
+policies:
+  - name: no-default-password
+    description: >
+      Blocks any plan that would leave postgres_password at its
+      insecure default ("changeme"). Written in Rego, evaluated
+      pre-apply. See docs/spacelift-notes.md for the policy source.
+    type: plan
+
+triggers:
+  - on: push
+    branch: main
