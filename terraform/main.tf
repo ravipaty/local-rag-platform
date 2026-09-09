@@ -16,6 +16,7 @@ resource "kubernetes_namespace" "rag_platform" {
     name = var.namespace
     labels = {
       "app.kubernetes.io/part-of" = "local-rag-platform"
+      "istio-injection"           = "enabled"
     }
   }
 }
